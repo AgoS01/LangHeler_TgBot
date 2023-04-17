@@ -1,6 +1,8 @@
 from translate import Translator
 
 def trns(word = None, lang = 'en-ru', file = None):
+    if lang == '.':
+        lang = 'en-ru'
     fromlang, tolang = lang.split('-')
     if file:
         with open("data/trans.txt", encoding='utf-8') as f:

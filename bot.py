@@ -13,7 +13,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 reply_keyboard = [['/translate', '/donation'],
-                      ['/morphology', '/midjourey']]
+                      ['/morphology', '/pict_gen']]
 markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False, resize_keyboard=True)
 current_func = 'dialog'
 lang = 'en-ru'
@@ -44,13 +44,13 @@ async def midjourney(update, context):
 async def translate(update, context):
     global current_func
     current_func = 'translation-1'
-    await update.message.reply_text("какие языки используем? (в формате en-ru)")
+    await update.message.reply_text("какие языки используем? (в формате en-ru). Пропустить: .")
 
 
 async def morphology(update, context):
     global current_func
     current_func = 'morphology'
-    await update.message.reply_text("введите слово")
+    await update.message.reply_text("введите слово или добавьте файл")
 
 
 async def donation(update, context):
