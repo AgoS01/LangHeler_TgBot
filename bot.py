@@ -12,7 +12,7 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
-reply_keyboard = [['/translate', '/donation'],
+reply_keyboard = [['/translate en-ru', '/donation'],
                       ['/morphology', '/pict_gen']]
 markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False, resize_keyboard=True)
 current_func = 'dialog'
@@ -42,15 +42,15 @@ async def midjourney(update, context):
 
 
 async def translate(update, context):
-    global current_func
-    current_func = 'translation-1'
-    await update.message.reply_text("какие языки используем? (в формате en-ru). Пропустить: .")
-
+    global current_func, lang
+    lang = context.args[0]
+    await update.effective_message.reply_text('что перевести (введите или добавьте файл)?')
+    current_func = 'translation'
 
 async def morphology(update, context):
     global current_func
     current_func = 'morphology'
-    await update.message.reply_text("введите слово или добавьте файл")
+    await update.message.reply_text("введите слово")
 
 
 async def donation(update, context):
@@ -68,6 +68,7 @@ async def downloader(update, context):
 
 async def dialog(update, context): #заменить на болталку из прошлого бота
     global current_func, lang
+    print(current_func, lang)
     if current_func == 'dialog':
         print(update.message.text)
         await update.message.reply_text(update.message.text)
@@ -75,11 +76,6 @@ async def dialog(update, context): #заменить на болталку из 
         print('mp:', update.message.text)
         await update.message.reply_text(morph(update.message.text))
         current_func = 'dialog'
-    elif current_func == 'translation-1':
-        print('lang:', update.message.text)
-        await update.message.reply_text('Что перевести?')
-        current_func = 'translation'
-        lang = update.message.text
     elif current_func == 'translation':
         print("tr:", update.message.text)
         await update.message.reply_text(trns(update.message.text, lang))
