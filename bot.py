@@ -54,15 +54,17 @@ async def morphology(update, context):
 
 
 async def donation(update, context):
-    await update.message.reply_text(
-        "Сайт: http://www.yandex.ru/company")
+    chat_id = update.effective_message.chat_id
+    with open('data/trans.txt') as f:
+        await context.bot.send_document(chat_id=chat_id, document=f)
 
 
 async def downloader(update, context):
+    global current_func
     file = await context.bot.get_file(update.message.document)
     await file.download_to_drive('data/trans.txt')
-    await update.message.reply_text(trns(lang, file = True))
-    current_func = 'morphology'
+    await update.message.reply_text('какие языки использовать? (в формате en-ru)')
+    current_func = 'translation-1'
 
 
 
@@ -80,6 +82,14 @@ async def dialog(update, context): #заменить на болталку из 
         print("tr:", update.message.text)
         await update.message.reply_text(trns(update.message.text, lang))
         current_func = 'dialog'
+    elif current_func == 'translation-1':
+        chat_id = update.effective_message.chat_id
+        lang = update.message.text
+        await update.message.reply_text('подождите немного, переводится')
+        file = trns(lang, file=True)
+        with open(file, 'r') as f:
+            await context.bot.send_document(chat_id=chat_id, document=f)
+        current_func = 'dialog'
 
 
 def main():
@@ -94,5 +104,4 @@ def main():
     application.add_handler(MessageHandler(filters.Document.ALL, downloader))
     application.add_handler(text_handler)  # Регистрируем обработчик в приложении.
     application.run_polling()
-
 main()
