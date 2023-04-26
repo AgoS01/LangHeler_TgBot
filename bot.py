@@ -43,7 +43,7 @@ async def midjourney(update, context):
 # не должна
 
 
-async def tts(update):
+async def tts(update, context):
     global current_func
     current_func = 'tts'
     await update.message.reply_text(
