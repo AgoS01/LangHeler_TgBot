@@ -5,6 +5,7 @@ from config import BOT_TOKEN
 from telegram import ReplyKeyboardMarkup
 from translation import trns
 from morphy import morph
+from tts import text_to_speech
 
 # Запускаем логгирование
 logging.basicConfig(
@@ -39,6 +40,17 @@ async def help_command(update, context):
 async def midjourney(update, context):
     await update.message.reply_text(
         "здесь должна быть работа с картинками ai")
+# не должна
+
+
+async def tts(update):
+    global current_func
+    current_func = 'tts'
+    await update.message.reply_text(
+        "Впиши сначала язык, а после запрос.\n Образец - 'ru, Привет!\n"
+        "Доступные языки:\n zh-TW\tКитайский\nen\tАнглийский\nru\tРусский"
+        "\nfr\tФранцузский\nes\tИспанский\npt\tПортугальский\nuk\tУкраинский")
+
 
 
 async def translate(update, context):
@@ -74,6 +86,13 @@ async def dialog(update, context): #заменить на болталку из 
     if current_func == 'dialog':
         print(update.message.text)
         await update.message.reply_text(update.message.text)
+    elif current_func == 'tts':
+        print('tts:', update.message.text)
+        await update.message.reply_text(text_to_speech(
+            update.message.text.split(', ')[0],
+            update.message.text.split(', ')[1]))
+        await context.bot.send_document(chat_id=chat_id, document='audio.mp3')
+        current_func = 'dialog'
     elif current_func == 'morphology':
         print('mp:', update.message.text)
         await update.message.reply_text(morph(update.message.text))
@@ -98,6 +117,7 @@ def main():
     application.add_handler(CommandHandler("donation", donation))
     application.add_handler(CommandHandler("translate", translate))
     application.add_handler(CommandHandler("midjourney", midjourney))
+    application.add_handler(CommandHandler("tts", tts))
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
     text_handler = MessageHandler(filters.TEXT & ~filters.COMMAND, dialog)
