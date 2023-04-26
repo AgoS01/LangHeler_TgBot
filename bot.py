@@ -43,7 +43,7 @@ async def midjourney(update, context):
 # не должна
 
 
-async def tts(update, context):
+async def tts(update):
     global current_func
     current_func = 'tts'
     await update.message.reply_text(
@@ -87,11 +87,13 @@ async def dialog(update, context): #заменить на болталку из 
         print(update.message.text)
         await update.message.reply_text(update.message.text)
     elif current_func == 'tts':
+        chat_id = update.effective_message.chat_id
         print('tts:', update.message.text)
-        await update.message.reply_text(tts.text_to_speech(
+        await update.message.reply_text(text_to_speech(
             update.message.text.split(', ')[0],
             update.message.text.split(', ')[1]))
-        await context.bot.send_document(chat_id=chat_id, document='audio.mp3')
+        with open('data/audio.mp3') as f:
+            await context.bot.send_document(chat_id=chat_id, document=f)
         current_func = 'dialog'
     elif current_func == 'morphology':
         print('mp:', update.message.text)
