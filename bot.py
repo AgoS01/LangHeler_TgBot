@@ -5,7 +5,7 @@ from config import BOT_TOKEN
 from telegram import ReplyKeyboardMarkup
 from translation import trns
 from morphy import morph
-from tts import text_to_speech
+from tts import tts
 
 # Запускаем логгирование
 logging.basicConfig(
@@ -88,7 +88,7 @@ async def dialog(update, context): #заменить на болталку из 
         await update.message.reply_text(update.message.text)
     elif current_func == 'tts':
         print('tts:', update.message.text)
-        await update.message.reply_text(text_to_speech(
+        await update.message.reply_text(tts.text_to_speech(
             update.message.text.split(', ')[0],
             update.message.text.split(', ')[1]))
         await context.bot.send_document(chat_id=chat_id, document='audio.mp3')
