@@ -5,7 +5,7 @@ from config import BOT_TOKEN
 from telegram import ReplyKeyboardMarkup
 from translation import trns
 from morphy import morph
-from tts import tts
+from tts import Tts
 
 # Запускаем логгирование
 logging.basicConfig(
@@ -14,7 +14,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 reply_keyboard = [['/translate en-ru', '/donation'],
-                      ['/morphology', '/pict_gen']]
+                      ['/morphology', '/tts']]
 markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False, resize_keyboard=True)
 current_func = 'dialog'
 lang = 'en-ru'
@@ -43,11 +43,11 @@ async def midjourney(update, context):
 # не должна
 
 
-async def tts(update):
+async def tts(update, context):
     global current_func
     current_func = 'tts'
     await update.message.reply_text(
-        "Впиши сначала язык, а после запрос.\n Образец - 'ru, Привет!\n"
+        "Впиши сначала язык, а после запрос.\n Образец - 'ru, Привет!'\n"
         "Доступные языки:\n zh-TW\tКитайский\nen\tАнглийский\nru\tРусский"
         "\nfr\tФранцузский\nes\tИспанский\npt\tПортугальский\nuk\tУкраинский")
 
@@ -66,9 +66,7 @@ async def morphology(update, context):
 
 
 async def donation(update, context):
-    chat_id = update.effective_message.chat_id
-    with open('data/trans.txt') as f:
-        await context.bot.send_document(chat_id=chat_id, document=f)
+    await update.message.reply_text("шутка, донатов нет")
 
 
 async def downloader(update, context):
@@ -88,11 +86,9 @@ async def dialog(update, context): #заменить на болталку из 
     elif current_func == 'tts':
         chat_id = update.effective_message.chat_id
         print('tts:', update.message.text)
-        await update.message.reply_text(Tts.text_to_speech(
-            update.message.text.split(', ')[0],
-            update.message.text.split(', ')[1]))
-        with open('data/audio.mp3') as f:
-            await context.bot.send_document(chat_id=chat_id, document=f)
+        Tts.text_to_speech(update.message.text.split(', ')[0],
+                            update.message.text.split(', ')[1])
+        await context.bot.send_audio(chat_id=chat_id, audio=open('audio.mp3', 'rb'))
         current_func = 'dialog'
     elif current_func == 'morphology':
         print('mp:', update.message.text)
@@ -125,4 +121,6 @@ def main():
     application.add_handler(MessageHandler(filters.Document.ALL, downloader))
     application.add_handler(text_handler)  # Регистрируем обработчик в приложении.
     application.run_polling()
+    
+    
 main()
