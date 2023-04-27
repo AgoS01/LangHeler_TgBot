@@ -52,12 +52,12 @@ async def tts(update):
         "\nfr\tФранцузский\nes\tИспанский\npt\tПортугальский\nuk\tУкраинский")
 
 
-
 async def translate(update, context):
     global current_func, lang
     lang = context.args[0]
     await update.effective_message.reply_text('что перевести (введите или добавьте файл)?')
     current_func = 'translation'
+
 
 async def morphology(update, context):
     global current_func
@@ -79,7 +79,6 @@ async def downloader(update, context):
     current_func = 'translation-1'
 
 
-
 async def dialog(update, context): #заменить на болталку из прошлого бота
     global current_func, lang
     print(current_func, lang)
@@ -89,7 +88,7 @@ async def dialog(update, context): #заменить на болталку из 
     elif current_func == 'tts':
         chat_id = update.effective_message.chat_id
         print('tts:', update.message.text)
-        await update.message.reply_text(text_to_speech(
+        await update.message.reply_text(Tts.text_to_speech(
             update.message.text.split(', ')[0],
             update.message.text.split(', ')[1]))
         with open('data/audio.mp3') as f:
