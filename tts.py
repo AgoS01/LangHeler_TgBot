@@ -1,6 +1,7 @@
 from gtts import gTTS
 
-class tts:
+
+class Tts:
     def text_to_speech(language, promt):
         try:
             myobj = gTTS(text=text, lang=language, slow=False)
@@ -9,9 +10,3 @@ class tts:
             myobj = gTTS(text='Внимание! Ошибка в запросее', lang='ru',
                          slow=False)
             myobj.save("audio.mp3")
-
-
-
-a, b = 'ru, Привет!'.split(', ')[0], 'ru, Привет!'.split(', ')[1]
-
-print(type(a))
