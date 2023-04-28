@@ -48,8 +48,9 @@ async def tts(update, context):
     current_func = 'tts'
     await update.message.reply_text(
         "Впиши сначала язык, а после запрос.\n Образец - 'ru, Привет!'\n"
-        "Доступные языки:\n zh-TW\tКитайский\nen\tАнглийский\nru\tРусский"
+        "Доступные языки:\nzh-TW\tКитайский\nen\tАнглийский\nru\tРусский"
         "\nfr\tФранцузский\nes\tИспанский\npt\tПортугальский\nuk\tУкраинский")
+
 
 
 async def translate(update, context):
@@ -57,7 +58,6 @@ async def translate(update, context):
     lang = context.args[0]
     await update.effective_message.reply_text('что перевести (введите или добавьте файл)?')
     current_func = 'translation'
-
 
 async def morphology(update, context):
     global current_func
@@ -77,6 +77,7 @@ async def downloader(update, context):
     current_func = 'translation-1'
 
 
+
 async def dialog(update, context): #заменить на болталку из прошлого бота
     global current_func, lang
     print(current_func, lang)
@@ -86,8 +87,8 @@ async def dialog(update, context): #заменить на болталку из 
     elif current_func == 'tts':
         chat_id = update.effective_message.chat_id
         print('tts:', update.message.text)
-        Tts.text_to_speech(update.message.text.split(', ')[0],
-                            update.message.text.split(', ')[1])
+        Tts.text_to_speech(update.message.text[0] + update.message.text[1],
+                            update.message.text[3:len(update.message.text) + 1])
         await context.bot.send_audio(chat_id=chat_id, audio=open('audio.mp3', 'rb'))
         current_func = 'dialog'
     elif current_func == 'morphology':
@@ -121,6 +122,4 @@ def main():
     application.add_handler(MessageHandler(filters.Document.ALL, downloader))
     application.add_handler(text_handler)  # Регистрируем обработчик в приложении.
     application.run_polling()
-    
-    
 main()
