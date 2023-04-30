@@ -37,12 +37,6 @@ async def help_command(update, context):
         "Я бот справочник")
 
 
-async def midjourney(update, context):
-    await update.message.reply_text(
-        "здесь должна быть работа с картинками ai")
-# не должна
-
-
 async def tts(update, context):
     global current_func
     current_func = 'tts'
@@ -50,7 +44,6 @@ async def tts(update, context):
         "Впиши сначала язык, а после запрос.\n Образец - 'ru, Привет!'\n"
         "Доступные языки:\nzh-TW\tКитайский\nen\tАнглийский\nru\tРусский"
         "\nfr\tФранцузский\nes\tИспанский\npt\tПортугальский\nuk\tУкраинский")
-
 
 
 async def translate(update, context):
@@ -114,7 +107,6 @@ def main():
     application.add_handler(CommandHandler("morphology", morphology))
     application.add_handler(CommandHandler("donation", donation))
     application.add_handler(CommandHandler("translate", translate))
-    application.add_handler(CommandHandler("midjourney", midjourney))
     application.add_handler(CommandHandler("tts", tts))
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
