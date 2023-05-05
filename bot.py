@@ -60,12 +60,16 @@ async def dialog(update, context):
         print(update.message.text)
         db_session.global_init("db/userstg.db")
         db_sess = db_session.create_session()
-        user = User(id_tg=update.message.id, context=update.message.text)
+        user = User(id_tg=update.message.from_user.id,
+                    context=update.message.text)
         db_sess.add(user)
         db_sess.commit()
+        users = db_sess.query(User).all()
+        prompt = '\n'.join(
+            [u.context for u in users]) + '\n' + update.message.text + '\n'
         response = openai.Completion.create(
             model="text-davinci-003",
-            prompt=update.message.text + '\n',
+            prompt=prompt,
             temperature=0,
             max_tokens=60,
             top_p=1,
